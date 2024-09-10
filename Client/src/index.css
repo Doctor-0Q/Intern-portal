@@ -1,0 +1,30 @@
+@import url('https://fonts.googleapis.com/css2?family=Vollkorn:wght@500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@500&display=swap');
+
+
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  scroll-behavior: smooth;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --gradient-background: linear-gradient(90.62deg, #B3D9FF 0.54%, #0080FF 99.5%);
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  background: var(--gradient-background);
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+}
