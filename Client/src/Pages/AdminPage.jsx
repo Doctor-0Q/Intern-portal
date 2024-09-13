@@ -14,7 +14,7 @@ export const AdminPage = () => {
           <h4 className="md:mb-2">Email</h4>
           <input
             id="input-field"
-            type="text"
+            type="email"
             placeholder="enter your email"
             className="w-[300px] h-[40px] border-b-2 border-gray-400 text-base placeholder-gray-500 focus:border-blue-500 focus:outline-none pl-1"
           />
