@@ -1,15 +1,26 @@
-import React, { useRef, useState } from "react";
+import React, { useState, useRef } from "react";
+import toast from 'react-hot-toast'
 
 const UpdateInternId = () => {
+  const [empID, setEmpID] = useState("");
   const [showForm, setShowForm] = useState(false);
+
+  const [name, setName] = useState("");
+  const [performance, setPerformance] = useState("");
+  const [contactNumber, setContactNumber] = useState("");
+  const [email, setEmail] = useState("");
 
   const offerLetterRef = useRef(null);
   const certificateRef = useRef(null);
   const LorRef = useRef(null);
 
-  const [offerLetter, setOfferLetter] = React.useState(null);
-  const [certificate, setCertificate] = React.useState(null);
-  const [Lor, setLor] = React.useState(null);
+  const [offerLetter, setOfferLetter] = useState(null);
+  const [certificate, setCertificate] = useState(null);
+  const [Lor, setLor] = useState(null);
+
+  const [offerLetterFile, setOfferLetterFile] = useState(null);
+  const [certificateFile, setCertificateFile] = useState(null);
+  const [LorFile, setLorFile] = useState(null);
 
   const handleClick = (fileRef) => {
     fileRef.current.click();
@@ -22,22 +33,72 @@ const UpdateInternId = () => {
       document.getElementById(inputId).value = selectedFile.name;
     }
   };
-  const [empID, setEmpID] = useState("");
 
-  const updateDetailForm = () => {
-    setShowForm(true);
-  };
+  const updateDetailForm = async () => {
+    try {
+      console.log("Sending request with ID:", empID);
+      const response = await fetch('http://localhost:8080/api/v1/findIntern', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ id: empID }),
+      });
+  
+      const data = await response.json();
+      console.log("Received response:", data);
+  
+      if (data.success) {
+        setName(data.internDetails.name || "");
+        setPerformance(data.internDetails.performance || "");
+        setContactNumber(data.internDetails.p_number || "");
+        setEmail(data.internDetails.email || "");
+        setOfferLetterFile(data.internDetails.offerLetterFile || null); //OR USE .offerLetterFile for the file name only
+        setCertificateFile(data.internDetails.certificateFile || null);
+        setLorFile(data.internDetails.lorFile || null);
+        setShowForm(true);
+      } else {
+        toast(data.message);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      toast('An error occurred while fetching intern data');
+    }
+  };  
 
-  const submitHandler = (e) => {
+  const submitHandler = async (e) => {
     e.preventDefault();
+    try {
+      const formData = new FormData();
+      formData.append('id', empID);
+      formData.append('name', name);
+      formData.append('performance', performance);
+      formData.append('contactNumber', contactNumber);
+      formData.append('email', email);
+      if (offerLetter) formData.append('offerLetter', offerLetter);
+      if (certificate) formData.append('certificate', certificate);
+      if (Lor) formData.append('lor', Lor);
+
+      const response = await fetch('http://localhost:8080/api/v1/updateIntern', {
+        method: 'PUT',
+        body: formData,
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        toast('Intern details updated successfully');
+      } else {
+        toast(data.message);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      toast('An error occurred while updating intern data');
+    }
   };
 
   return (
-    <div
-      className={`flex flex-col items-center w-full ${
-        showForm ? "h-[1000px]" : "h-[480px]"
-      }`}
-    >
+    <div className={`flex flex-col items-center w-full ${showForm ? "h-[1000px]" : "h-[480px]"}`}>
       <div>
         <h1 className="font-vollkorn text-3xl font-medium text-[#464545] text-center mt-4">
           Doc-q Admin Portal
@@ -50,27 +111,21 @@ const UpdateInternId = () => {
         </h1>
       </div>
 
-      <div class="relative w-64 mt-[2%]">
+      <div className="relative w-64 mt-[2%]">
         <input
-          onChange={(e) => {
-            setEmpID(e.target.value);
-          }}
+          onChange={(e) => setEmpID(e.target.value)}
           type="text"
           placeholder="Enter Employee ID"
-          class="w-full pr-10 p-2.5 border border-gray-300 rounded-md focus:outline-none"
+          className="w-full pr-10 p-2.5 border border-gray-300 rounded-md focus:outline-none"
           value={empID}
         />
-        <span
-          class={`absolute inset-y-0 right-3 flex items-center ${
-            empID ? "" : "hidden"
-          }`}
-        >
+        <span className={`absolute inset-y-0 right-3 flex items-center ${empID ? "" : "hidden"}`}>
           <svg
             onClick={() => setEmpID("")}
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
-            stroke-width="1"
+            strokeWidth="1"
             stroke="currentColor"
             className="h-5 w-5 hover:cursor-pointer"
           >
@@ -91,248 +146,154 @@ const UpdateInternId = () => {
         </button>
       </div>
 
-      {/* Updating form */}
-      <form
-        onSubmit={submitHandler}
-        className={`md:mt-[5%] mt-4 flex flex-col justify-center items-center ${
-          showForm ? "" : "hidden"
-        } w-full px-4 md:px-8`}
-      >
-        <i className="md:text-3xl text-2xl underline text-[#343e49] mb-4">
-          Update your interns details
-        </i>
-        <div className="flex justify-center items-center flex-col  w-screen mt-[3%]">
-          <div className="flex md:flex-row flex-col w-full items-center justify-center md:space-x-[25%]">
-            <div>
-              <label htmlFor="name" className="font-bold text-lg">
-                Name
-              </label>
-              <br />
-              <input
-                type="text"
-                id="name"
-                placeholder="name"
-                className="w-64 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
+      {showForm && (
+        <form onSubmit={submitHandler} className="md:mt-[5%] mt-4 flex flex-col justify-center items-center w-full px-4 md:px-8">
+          <i className="md:text-3xl text-2xl underline text-[#343e49] mb-4">
+            Update your interns details
+          </i>
+          <div className="flex justify-center items-center flex-col w-screen mt-[3%]">
+            <div className="flex md:flex-row flex-col w-full items-center justify-center md:space-x-[25%]">
+              <div>
+                <label htmlFor="name" className="font-bold text-lg">Name</label>
+                <br />
+                <input
+                  type="text"
+                  id="name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  className="w-64 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+              <div>
+                <label htmlFor="performance" className="font-bold text-lg">Intern Performance</label>
+                <br />
+                <input
+                  type="text"
+                  id="performance"
+                  value={performance}
+                  onChange={(e) => setPerformance(e.target.value)}
+                  className="w-64 px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
             </div>
-            <div>
-              <label htmlFor="name" className="font-bold text-lg">
-                Intern Performance
-              </label>{" "}
-              <br />
-              <input
-                type="text"
-                id="name"
-                placeholder="Enter performance"
-                className="w-64 px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
+            <div className="flex md:flex-row flex-col w-full items-center justify-center md:space-x-[25%] mt-[3%]">
+              <div>
+                <label htmlFor="contactNumber" className="font-bold text-lg">Contact number</label>
+                <br />
+                <input
+                  type="text"
+                  id="contactNumber"
+                  value={contactNumber}
+                  onChange={(e) => setContactNumber(e.target.value)}
+                  className="w-64 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+              <div>
+                <label htmlFor="email" className="font-bold text-lg">Email</label>
+                <br />
+                <input
+                  type="email"
+                  id="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-64 px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
             </div>
-          </div>
-          <div className="flex md:flex-row flex-col w-full items-center justify-center md:space-x-[25%] mt-[3%]">
-            <div>
-              <label htmlFor="number" className="font-bold text-lg">
-                Contact number
-              </label>
-              <br />
-              <input
-                type="text"
-                id="number"
-                placeholder="enter contact number"
-                className="w-64 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-            <div>
-              <label htmlFor="email" className="font-bold text-lg">
-                Email
-              </label>
-              <br />
-              <input
-                type="email"
-                id="email"
-                placeholder="Enter email"
-                className="w-64 px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-          </div>
-          <div className="flex md:flex-row flex-col w-full items-center justify-center md:space-x-[25%] mt-[3%]">
-            <div className="relative w-64">
-              <label htmlFor="offerLetter" className="font-bold text-lg">
-                Upload interns offer letter
-              </label>
-              <input
-                readOnly
-                onClick={() => handleClick(offerLetterRef)}
-                type="text"
-                id="offerLetter"
-                placeholder="upload the interns offer letter"
-                className="w-full pr-10 p-2.5 border border-gray-300 rounded-md focus:outline-none hover:cursor-pointer"
-              />
-              <span
-                onClick={() => handleClick(offerLetterRef)}
-                class="absolute inset-y-0 right-3 flex items-center mt-[10%] hover:cursor-pointer"
-              >
-                <svg
-                  fill="#000000"
-                  className="h-5 w-5"
-                  version="1.1"
-                  id="Capa_1"
-                  xmlns="http://www.w3.org/2000/svg"
-                  xmlns:xlink="http://www.w3.org/1999/xlink"
-                  viewBox="-23.1 -23.1 431.17 431.17"
-                  xml:space="preserve"
-                  stroke="#000000"
-                  stroke-width="38.497"
-                >
-                  <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                  <g
-                    id="SVGRepo_tracerCarrier"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  ></g>
-                  <g id="SVGRepo_iconCarrier">
-                    {" "}
-                    <g>
-                      {" "}
+            <div className="flex md:flex-row flex-col w-full items-center justify-center md:space-x-[25%] mt-[3%]">
+              <div className="relative w-64">
+                <label htmlFor="offerLetter" className="font-bold text-lg">Upload interns offer letter</label>
+                <input
+                  readOnly
+                  onClick={() => handleClick(offerLetterRef)}
+                  type="text"
+                  id="offerLetter"
+                  placeholder={offerLetterFile || "upload the interns offer letter"}
+                  className="w-full pr-10 p-2.5 border border-gray-300 rounded-md focus:outline-none hover:cursor-pointer"
+                />
+                <span onClick={() => handleClick(offerLetterRef)} className="absolute inset-y-0 right-3 flex items-center mt-[10%] hover:cursor-pointer">
+                  <svg fill="#000000" className="h-5 w-5" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" viewBox="-23.1 -23.1 431.17 431.17" xmlSpace="preserve" stroke="#000000" strokeWidth="38.497">
+                    <g id="SVGRepo_iconCarrier">
                       <g id="Upload">
-                        {" "}
-                        <path d="M372.939,264.641c-6.641,0-12.03,5.39-12.03,12.03v84.212H24.061v-84.212c0-6.641-5.39-12.03-12.03-12.03 S0,270.031,0,276.671v96.242c0,6.641,5.39,12.03,12.03,12.03h360.909c6.641,0,12.03-5.39,12.03-12.03v-96.242 C384.97,270.019,379.58,264.641,372.939,264.641z"></path>{" "}
-                        <path d="M117.067,103.507l63.46-62.558v235.71c0,6.641,5.438,12.03,12.151,12.03c6.713,0,12.151-5.39,12.151-12.03V40.95 l63.46,62.558c4.74,4.704,12.439,4.704,17.179,0c4.74-4.704,4.752-12.319,0-17.011l-84.2-82.997 c-4.692-4.656-12.584-4.608-17.191,0L99.888,86.496c-4.752,4.704-4.74,12.319,0,17.011 C104.628,108.211,112.327,108.211,117.067,103.507z"></path>{" "}
-                      </g>{" "}
-                      <g> </g> <g> </g> <g> </g> <g> </g> <g> </g> <g> </g>{" "}
-                    </g>{" "}
-                  </g>
-                </svg>
-              </span>
-              <input
-                type="file"
-                ref={offerLetterRef}
-                style={{ display: "none" }}
-                onChange={(event) =>
-                  handleFileChange(event, setOfferLetter, "offerLetter")
-                }
-              />
-            </div>
-
-            <div className="relative w-64">
-              <label htmlFor="certificate" className="font-bold text-lg">
-                Upload interns Certificate
-              </label>
-              <input
-                readOnly
-                onClick={() => handleClick(certificateRef)}
-                type="text"
-                id="certificate"
-                placeholder="upload the interns Certificate"
-                className="w-64 pr-10 p-2.5 border border-gray-300 rounded-md focus:outline-none hover:cursor-pointer"
-              />
-              <span
-                onClick={() => handleClick(certificateRef)}
-                class="absolute inset-y-0 right-3 flex items-center mt-[10%] hover:cursor-pointer"
-              >
-                <svg
-                  fill="#000000"
-                  className="h-5 w-5"
-                  version="1.1"
-                  id="Capa_1"
-                  xmlns="http://www.w3.org/2000/svg"
-                  xmlns:xlink="http://www.w3.org/1999/xlink"
-                  viewBox="-23.1 -23.1 431.17 431.17"
-                  xml:space="preserve"
-                  stroke="#000000"
-                  stroke-width="38.497"
-                >
-                  <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                  <g
-                    id="SVGRepo_tracerCarrier"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  ></g>
-                  <g id="SVGRepo_iconCarrier">
-                    {" "}
-                    <g>
-                      {" "}
+                        <path d="M372.939,264.641c-6.641,0-12.03,5.39-12.03,12.03v84.212H24.061v-84.212c0-6.641-5.39-12.03-12.03-12.03 S0,270.031,0,276.671v96.242c0,6.641,5.39,12.03,12.03,12.03h360.909c6.641,0,12.03-5.39,12.03-12.03v-96.242 C384.97,270.019,379.58,264.641,372.939,264.641z"></path>
+                        <path d="M117.067,103.507l63.46-62.558v235.71c0,6.641,5.438,12.03,12.151,12.03c6.713,0,12.151-5.39,12.151-12.03V40.95 l63.46,62.558c4.74,4.704,12.439,4.704,17.179,0c4.74-4.704,4.752-12.319,0-17.011l-84.2-82.997 c-4.692-4.656-12.584-4.608-17.191,0L99.888,86.496c-4.752,4.704-4.74,12.319,0,17.011 C104.628,108.211,112.327,108.211,117.067,103.507z"></path>
+                      </g>
+                    </g>
+                  </svg>
+                </span>
+                <input
+                  type="file"
+                  ref={offerLetterRef}
+                  style={{ display: "none" }}
+                  onChange={(event) => handleFileChange(event, setOfferLetter, "offerLetter")}
+                />
+              </div>
+              <div className="relative w-64">
+                <label htmlFor="certificate" className="font-bold text-lg">Upload interns Certificate</label>
+                <input
+                  readOnly
+                  onClick={() => handleClick(certificateRef)}
+                  type="text"
+                  id="certificate"
+                  placeholder={certificateFile || "upload the interns Certificate"}
+                  className="w-64 pr-10 p-2.5 border border-gray-300 rounded-md focus:outline-none hover:cursor-pointer"
+                />
+                <span onClick={() => handleClick(certificateRef)} className="absolute inset-y-0 right-3 flex items-center mt-[10%] hover:cursor-pointer">
+                <svg fill="#000000" className="h-5 w-5" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" viewBox="-23.1 -23.1 431.17 431.17" xmlSpace="preserve" stroke="#000000" strokeWidth="38.497">
+                    <g id="SVGRepo_iconCarrier">
                       <g id="Upload">
-                        {" "}
-                        <path d="M372.939,264.641c-6.641,0-12.03,5.39-12.03,12.03v84.212H24.061v-84.212c0-6.641-5.39-12.03-12.03-12.03 S0,270.031,0,276.671v96.242c0,6.641,5.39,12.03,12.03,12.03h360.909c6.641,0,12.03-5.39,12.03-12.03v-96.242 C384.97,270.019,379.58,264.641,372.939,264.641z"></path>{" "}
-                        <path d="M117.067,103.507l63.46-62.558v235.71c0,6.641,5.438,12.03,12.151,12.03c6.713,0,12.151-5.39,12.151-12.03V40.95 l63.46,62.558c4.74,4.704,12.439,4.704,17.179,0c4.74-4.704,4.752-12.319,0-17.011l-84.2-82.997 c-4.692-4.656-12.584-4.608-17.191,0L99.888,86.496c-4.752,4.704-4.74,12.319,0,17.011 C104.628,108.211,112.327,108.211,117.067,103.507z"></path>{" "}
-                      </g>{" "}
-                      <g> </g> <g> </g> <g> </g> <g> </g> <g> </g> <g> </g>{" "}
-                    </g>{" "}
-                  </g>
-                </svg>
-              </span>
-              <input
-                type="file"
-                ref={certificateRef}
-                style={{ display: "none" }}
-                onChange={(event) =>
-                  handleFileChange(event, setCertificate, "certificate")
-                }
-              />
+                        <path d="M372.939,264.641c-6.641,0-12.03,5.39-12.03,12.03v84.212H24.061v-84.212c0-6.641-5.39-12.03-12.03-12.03 S0,270.031,0,276.671v96.242c0,6.641,5.39,12.03,12.03,12.03h360.909c6.641,0,12.03-5.39,12.03-12.03v-96.242 C384.97,270.019,379.58,264.641,372.939,264.641z"></path>
+                        <path d="M117.067,103.507l63.46-62.558v235.71c0,6.641,5.438,12.03,12.151,12.03c6.713,0,12.151-5.39,12.151-12.03V40.95 l63.46,62.558c4.74,4.704,12.439,4.704,17.179,0c4.74-4.704,4.752-12.319,0-17.011l-84.2-82.997 c-4.692-4.656-12.584-4.608-17.191,0L99.888,86.496c-4.752,4.704-4.74,12.319,0,17.011 C104.628,108.211,112.327,108.211,117.067,103.507z"></path>
+                      </g>
+                    </g>
+                  </svg>
+                </span>
+                <input
+                  type="file"
+                  ref={certificateRef}
+                  style={{ display: "none" }}
+                  onChange={(event) => handleFileChange(event, setCertificate, "certificate")}
+                />
+              </div>
+            </div>
+            <div className="flex md:flex-row flex-col w-full items-center justify-center md:space-x-[25%] mt-[3%]">
+              <div className="relative w-64">
+                <label htmlFor="Lor" className="font-bold text-lg">Upload interns LOR</label>
+                <input
+                  readOnly
+                  onClick={() => handleClick(LorRef)}
+                  type="text"
+                  id="lor"
+                  placeholder={LorFile || "upload the interns LOR"}
+                  className="w-full pr-10 p-2.5 border border-gray-300 rounded-md focus:outline-none hover:cursor-pointer"
+                />
+                <span onClick={() => handleClick(LorRef)} className="absolute inset-y-0 right-3 flex items-center mt-[10%] hover:cursor-pointer">
+                  <svg fill="#000000" className="h-5 w-5" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" viewBox="-23.1 -23.1 431.17 431.17" xmlSpace="preserve" stroke="#000000" strokeWidth="38.497">
+                    <g id="SVGRepo_iconCarrier">
+                      <g id="Upload">
+                        <path d="M372.939,264.641c-6.641,0-12.03,5.39-12.03,12.03v84.212H24.061v-84.212c0-6.641-5.39-12.03-12.03-12.03 S0,270.031,0,276.671v96.242c0,6.641,5.39,12.03,12.03,12.03h360.909c6.641,0,12.03-5.39,12.03-12.03v-96.242 C384.97,270.019,379.58,264.641,372.939,264.641z"></path>
+                        <path d="M117.067,103.507l63.46-62.558v235.71c0,6.641,5.438,12.03,12.151,12.03c6.713,0,12.151-5.39,12.151-12.03V40.95 l63.46,62.558c4.74,4.704,12.439,4.704,17.179,0c4.74-4.704,4.752-12.319,0-17.011l-84.2-82.997 c-4.692-4.656-12.584-4.608-17.191,0L99.888,86.496c-4.752,4.704-4.74,12.319,0,17.011 C104.628,108.211,112.327,108.211,117.067,103.507z"></path>
+                      </g>
+                    </g>
+                  </svg>
+                </span>
+                <input
+                  type="file"
+                  ref={LorRef}
+                  style={{ display: "none" }}
+                  onChange={(event) => handleFileChange(event, setLor, "lor")}
+                />
+              </div>
             </div>
           </div>
-          <div className="relative w-64 mt-[3%]">
-            <label htmlFor="Lor" className="font-bold text-lg">
-              Upload Letter of Recomd
-            </label>
-            <input
-              readOnly
-              onClick={() => handleClick(LorRef)}
-              type="text"
-              id="certificate"
-              placeholder="upload the interns L.O.R"
-              className="w-64 pr-10 p-2.5 border border-gray-300 rounded-md focus:outline-none hover:cursor-pointer"
-            />
-            <span
-              onClick={() => handleClick(LorRef)}
-              class="absolute inset-y-0 right-3 flex items-center mt-[10%] hover:cursor-pointer"
-            >
-              <svg
-                fill="#000000"
-                className="h-5 w-5"
-                version="1.1"
-                id="Capa_1"
-                xmlns="http://www.w3.org/2000/svg"
-                xmlns:xlink="http://www.w3.org/1999/xlink"
-                viewBox="-23.1 -23.1 431.17 431.17"
-                xml:space="preserve"
-                stroke="#000000"
-                stroke-width="38.497"
-              >
-                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                <g
-                  id="SVGRepo_tracerCarrier"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                ></g>
-                <g id="SVGRepo_iconCarrier">
-                  {" "}
-                  <g>
-                    {" "}
-                    <g id="Upload">
-                      {" "}
-                      <path d="M372.939,264.641c-6.641,0-12.03,5.39-12.03,12.03v84.212H24.061v-84.212c0-6.641-5.39-12.03-12.03-12.03 S0,270.031,0,276.671v96.242c0,6.641,5.39,12.03,12.03,12.03h360.909c6.641,0,12.03-5.39,12.03-12.03v-96.242 C384.97,270.019,379.58,264.641,372.939,264.641z"></path>{" "}
-                      <path d="M117.067,103.507l63.46-62.558v235.71c0,6.641,5.438,12.03,12.151,12.03c6.713,0,12.151-5.39,12.151-12.03V40.95 l63.46,62.558c4.74,4.704,12.439,4.704,17.179,0c4.74-4.704,4.752-12.319,0-17.011l-84.2-82.997 c-4.692-4.656-12.584-4.608-17.191,0L99.888,86.496c-4.752,4.704-4.74,12.319,0,17.011 C104.628,108.211,112.327,108.211,117.067,103.507z"></path>{" "}
-                    </g>{" "}
-                    <g> </g> <g> </g> <g> </g> <g> </g> <g> </g> <g> </g>{" "}
-                  </g>{" "}
-                </g>
-              </svg>
-            </span>
-            <input
-              type="file"
-              ref={LorRef}
-              style={{ display: "none" }}
-              onChange={(event) => handleFileChange(event, setLor, "Lor")}
-            />
+          <div className="md:mt-[2%] mt-[5%] w-60 h-12 text-2xl rounded-2xl bg-[#063360] text-white font-medium transition-all duration-300 ease-in-out hover:bg-[#041e36] cursor-pointer flex justify-center">
+            <button type="submit" className="p-2">Submit</button>
           </div>
-        </div>
-        <div className="md:mt-[2%] mt-[5%] w-60 h-12 text-2xl rounded-2xl bg-[#063360] text-white font-medium transition-all duration-300 ease-in-out hover:bg-[#041e36] cursor-pointer flex justify-center">
-          <button className="p-2">Submit</button>
-        </div>
-      </form>
+        </form>
+      )}
     </div>
   );
 };
 
 export default UpdateInternId;
+
