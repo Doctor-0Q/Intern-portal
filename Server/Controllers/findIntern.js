@@ -11,7 +11,7 @@ export const findIntern = async (req, res) => {
     const internExist = await Intern.findOne({id});
 
     if (!internExist) {
-      return res.status(400).json({ message: "Please enter a valid ID", success: false });
+      return res.status(400).json({ message: "This intern does not exist", success: false });
     }
 
     return res.status(200).json({ success: true, internDetails: internExist });
