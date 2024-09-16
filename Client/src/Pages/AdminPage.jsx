@@ -16,8 +16,8 @@ export const AdminPage = () => {
   }
 
   const navigate = useNavigate();
-  const submitHandler = async(e) => {
-    e.preventDefault();
+  const submitHandler = async(event) => {
+    event.preventDefault();
     try {
       const response=await axios.post('http://localhost:8080/api/v1/adminLogin',{
         email:email,
@@ -55,7 +55,7 @@ export const AdminPage = () => {
           onChange={handlePassword}
           value={password}
             id="input-field"
-            type="text"
+            type="password"
             placeholder="enter your password"
             className="w-[300px] h-[40px] border-b-2 border-gray-400 text-base placeholder-gray-500 focus:border-blue-500 focus:outline-none pl-1"
           />
@@ -67,7 +67,7 @@ export const AdminPage = () => {
         </div>
         <div>
           <button
-            onClick={()=>submitHandler(event)}
+            onClick={submitHandler}
             className="w-[327px] h-[66px] rounded-lg bg-green-600 text-white font-medium text-lg transition-transform duration-300 ease-in-out hover:bg-green-700 hover:scale-105"
           >
             Login

@@ -17,5 +17,6 @@ export const adminLogin = async (req, res) => {
     if (password !== adminExist.password) {
         return res.status(400).json({ message: "Incorrect password", success: false });
     }
+      
     return res.status(200).json({ success: true, message: "Admin login success" });
 };

@@ -1,11 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import toast from "react-hot-toast";
 
-const UpdateInternId = () => {
+const AddIntern = () => {
   const navigate = useNavigate();
-  const [showForm, setShowForm] = useState(false);
 
   const offerLetterRef = useRef(null);
   const certificateRef = useRef(null);
@@ -28,19 +26,8 @@ const UpdateInternId = () => {
   };
   const [empID, setEmpID] = useState("");
 
-  const updateDetailForm = async() => {
-    try {
-      const response = await axios.post('http://localhost:8080/api/v1/findIntern',{
-        id: empID
-      });
-      if(response.data.success){
-
-        setShowForm(true);
-      }
-    } catch (error) {
-      toast.error("This intern does not exist")
-    }
-    
+  const updateDetailForm = () => {
+    setShowForm(true);
   };
 
   const submitHandler = (e) => {
@@ -53,9 +40,8 @@ const UpdateInternId = () => {
 
   return (
     <div
-      className={`flex flex-col items-center w-full ${
-        showForm ? "h-[1000px]" : "h-[480px]"
-      }`}
+      className="flex flex-col items-center w-full h-[1000px]"
+      
     >
       <div>
         <h1 className="font-vollkorn text-3xl font-medium text-[#464545] text-center mt-4">
@@ -67,7 +53,7 @@ const UpdateInternId = () => {
       
       <div className="mt-[5%]">
         <h1 className="text-[#343e49] text-2xl md:text-3xl">
-          <i>Enter Intern ID to update Details</i>
+          <i>Enter new Intern Details</i>
         </h1>
       </div>
 
@@ -77,7 +63,7 @@ const UpdateInternId = () => {
             setEmpID(e.target.value);
           }}
           type="text"
-          placeholder="Enter Employee ID"
+          placeholder="Enter new Intern ID"
           class="w-full pr-10 p-2.5 border border-gray-300 rounded-md focus:outline-none"
           value={empID}
         />
@@ -87,12 +73,7 @@ const UpdateInternId = () => {
           }`}
         >
           <svg
-            onClick={
-              () => {
-                setEmpID("")
-                setShowForm(false)
-              }
-            }
+            onClick={() => setEmpID("")}
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
@@ -108,32 +89,13 @@ const UpdateInternId = () => {
         </span>
       </div>
 
-      <div className="mt-4">
-        <button
-          onClick={updateDetailForm}
-          className="bg-[#063360] w-[150px] h-[37px] rounded-lg text-white text-xl"
-        >
-          Check
-        </button>
         
-      </div>
-        <div onClick={addIntern} className={`flex flex-col items-center text-xl ${
-          showForm ? "hidden" : ""
-        }`}>
-  <button className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-4 py-2 rounded-full md:w-[300px] mt-4">
-    Add an Intern
-  </button>
-</div>
       {/* Updating form */}
       <form
         onSubmit={submitHandler}
-        className={`md:mt-[5%] mt-4 flex flex-col justify-center items-center ${
-          showForm ? "" : "hidden"
-        } w-full px-4 md:px-8`}
+        className="md:mt-[5%] mt-4 flex flex-col justify-center items-center w-full px-4 md:px-8"
       >
-        <i className="md:text-3xl text-2xl underline text-[#343e49] mb-4">
-          Update your interns details
-        </i>
+        
         <div className="flex justify-center items-center flex-col  w-screen mt-[3%]">
           <div className="flex md:flex-row flex-col w-full items-center justify-center md:space-x-[25%]">
             <div>
@@ -369,4 +331,4 @@ const UpdateInternId = () => {
   );
 };
 
-export default UpdateInternId;
+export default AddIntern;

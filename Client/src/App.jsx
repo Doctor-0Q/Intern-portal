@@ -8,6 +8,7 @@ import AdminPage from "./Pages/AdminPage";
 import Validated from "./Components/Validated";
 import UpdateInternId from "./Components/UpdateInternId";
 import InternDetails from "./Components/InternDetails";
+import AddIntern from "./Components/AddIntern";
 
 const App = () => {
   return (
@@ -23,6 +24,10 @@ const App = () => {
             <Route
               path="/AdminPage/Update-Intern-details"
               element={<UpdateInternId />}
+            />
+            <Route
+              path="/AdminPage/Add-New-Intern"
+              element={<AddIntern />}
             />
             <Route path="/ValidatePage/Validated" element={<Validated />} />
           </Routes>
