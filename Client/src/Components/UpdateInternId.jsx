@@ -1,7 +1,10 @@
-import React, { useState, useRef } from "react";
-import toast from 'react-hot-toast'
+import React, { useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import toast from "react-hot-toast";
 
 const UpdateInternId = () => {
+  const navigate = useNavigate();
   const [empID, setEmpID] = useState("");
   const [showForm, setShowForm] = useState(false);
 
@@ -34,6 +37,10 @@ const UpdateInternId = () => {
     }
   };
 
+  const addIntern=()=>{
+    navigate('../AdminPage/Add-New-Intern')
+  }
+
   const updateDetailForm = async () => {
     try {
       console.log("Sending request with ID:", empID);
@@ -58,7 +65,7 @@ const UpdateInternId = () => {
         setLorFile(data.internDetails.lorFile || null);
         setShowForm(true);
       } else {
-        toast(data.message);
+        toast.error(data.message);
       }
     } catch (error) {
       console.error('Error:', error);
@@ -121,7 +128,12 @@ const UpdateInternId = () => {
         />
         <span className={`absolute inset-y-0 right-3 flex items-center ${empID ? "" : "hidden"}`}>
           <svg
-            onClick={() => setEmpID("")}
+           onClick={
+            () => {
+              setEmpID("")
+              setShowForm(false)
+            }
+          }
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
@@ -145,7 +157,13 @@ const UpdateInternId = () => {
           Check
         </button>
       </div>
-
+      <div onClick={addIntern} className={`flex flex-col items-center text-xl ${
+          showForm ? "hidden" : ""
+        }`}>
+  <button className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-4 py-2 rounded-full md:w-[300px] mt-4">
+    Add an Intern
+  </button>
+</div>
       {showForm && (
         <form onSubmit={submitHandler} className="md:mt-[5%] mt-4 flex flex-col justify-center items-center w-full px-4 md:px-8">
           <i className="md:text-3xl text-2xl underline text-[#343e49] mb-4">

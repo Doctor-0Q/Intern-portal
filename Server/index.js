@@ -1,33 +1,29 @@
 import express, { urlencoded } from "express";
-import path from 'path';
-import { fileURLToPath } from 'url';
 import connection from './DB/connectionDB.js';
-import internRoute from './Routes/internRoutes.js';
-import cors from 'cors'
-import cleanupTempFolder from "./Controllers/cleanTempFolder.js";
+import internRoute from './Routes/intern.route.js';
+import adminRoute from './Routes/admin.route.js';
+import cors from 'cors';
+import cookieParser from "cookie-parser";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 const port = 8080;
 const app = express();
+app.use(express.json());
+app.use(cookieParser());
+app.use(cors({
+  origin: 'http://localhost:5173',  
+  credentials: true  
+}));
+
 
 // Call the connection function
-connection('test');  // This should trigger the connection logs
-
-cleanupTempFolder();
+connection();  // This should trigger the connection logs
 
 app.use(urlencoded({ extended: true }));
 app.use(express.json());
-app.use(cors());
 app.use('/api/v1', internRoute);
-
-app.use('/Documents', express.static(path.join(__dirname, 'Documents')));
+app.use('/api/v1', adminRoute);
 
 app.listen(port, () => {
   console.log(`Server is connected to port ${port}`);
-});
-
-app.use((req,res)=>{
-  console.log("request received");
 });

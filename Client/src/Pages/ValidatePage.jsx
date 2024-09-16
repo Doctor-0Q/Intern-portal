@@ -51,7 +51,7 @@ export const ValidatePage = () => {
           </h1>
         </div>
         <div className="flex w-screen relative justify-center items-center">
-          <div className="w-full md:ml-[20%]">
+          <div className="w-full md:ml-[15%]">
             <img
               src={HomeImgLeft}
               alt=""
