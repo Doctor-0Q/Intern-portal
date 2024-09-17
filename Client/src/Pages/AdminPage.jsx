@@ -25,6 +25,7 @@ export const AdminPage = () => {
       })
       if(response.data.success){
         toast.success(response.data.message)
+        localStorage.setItem('isAdmin', 'true');
         navigate('./Update-Intern-details');
       }
       else{
