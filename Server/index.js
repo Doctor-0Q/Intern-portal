@@ -2,6 +2,7 @@ import express, { urlencoded } from "express";
 import connection from './DB/connectionDB.js';
 import adminRoute from './Routes/admin.route.js';
 import internRoute from './Routes/internRoutes.js'
+import downloadDocuments from './Routes/download.route.js'
 import cors from 'cors';
 import cookieParser from "cookie-parser";
 import path from 'path'
@@ -31,6 +32,7 @@ app.use(urlencoded({ extended: true }));
 app.use(express.json());
 app.use('/api/v1', internRoute);
 app.use('/api/v1', adminRoute);
+app.use('/api/v1', downloadDocuments);
 
 
 app.use('/Documents', express.static(path.join(__dirname, 'Documents')));

@@ -16,9 +16,12 @@ const InternDetails = () => {
   };
 
   if (!intern) {
-    return <p>No intern details available.</p>;
+    return <p className="text-white text-2xl">No intern details available.</p>;
   }
-
+  const downloadFile = (fileType) => {
+    const url = `http://localhost:8080/api/v1/download/${fileType}/${intern.id}`;
+    window.open(url, '_blank');  
+  };
   return (
     <>
       <div
@@ -67,27 +70,36 @@ const InternDetails = () => {
       
       {isPopupVisible && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center text-xl">
-          <div className="bg-white p-8 rounded-lg shadow-lg w-[90%] md:w-[40%]">
-            <h3 className="text-2xl font-semibold mb-4 text-center">Download Documents</h3>
-            <div className="flex flex-col space-y-4">
-              <button className="bg-gradient-to-r from-customBlue1 via-customBlue2 to-customBlue3 hover:from-blue-500 hover:to-blue-600 text-white px-4 py-2 rounded-full">
-                Download Certificate
-              </button>
-              <button className="bg-gradient-to-r from-customBlue1 via-customBlue2 to-customBlue3 hover:from-blue-500 hover:to-blue-600 text-white px-4 py-2 rounded-full">
-                Download Letter of recommendation
-              </button>
-              <button className="bg-gradient-to-r from-customBlue1 via-customBlue2 to-customBlue3 hover:from-blue-500 hover:to-blue-600 text-white px-4 py-2 rounded-full">
-                Download Offer Letter
-              </button>
-            </div>
+        <div className="bg-white p-8 rounded-lg shadow-lg w-[90%] md:w-[40%]">
+          <h3 className="text-2xl font-semibold mb-4 text-center">Download Documents</h3>
+          <div className="flex flex-col space-y-4">
             <button
-              className="mt-6 bg-red-500 text-white px-4 py-2 rounded-full w-full"
-              onClick={closePopup}
+              className="bg-gradient-to-r from-customBlue1 via-customBlue2 to-customBlue3 hover:from-blue-500 hover:to-blue-600 text-white px-4 py-2 rounded-full"
+              onClick={() => downloadFile('certificate')}
             >
-              Close
+              Download Certificate
+            </button>
+            <button
+              className="bg-gradient-to-r from-customBlue1 via-customBlue2 to-customBlue3 hover:from-blue-500 hover:to-blue-600 text-white px-4 py-2 rounded-full"
+              onClick={() => downloadFile('lor')}
+            >
+              Download Letter of Recommendation
+            </button>
+            <button
+              className="bg-gradient-to-r from-customBlue1 via-customBlue2 to-customBlue3 hover:from-blue-500 hover:to-blue-600 text-white px-4 py-2 rounded-full"
+              onClick={() => downloadFile('offerLetter')}
+            >
+              Download Offer Letter
             </button>
           </div>
+          <button
+            className="mt-6 bg-red-500 text-white px-4 py-2 rounded-full w-full"
+            onClick={closePopup}
+          >
+            Close
+          </button>
         </div>
+      </div>
       )}
     </>
   );
