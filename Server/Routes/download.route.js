@@ -36,6 +36,7 @@ router.get('/download/offerLetter/:id', async (req, res) => {
   downloadFile(res, filePath, 'OfferLetter');
 });
 
+
 // Helper function to download file
 const downloadFile = (res, filePath, defaultName) => {
   if (filePath) {

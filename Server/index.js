@@ -8,7 +8,7 @@ import cookieParser from "cookie-parser";
 import path from 'path'
 import { fileURLToPath } from 'url';
 import cleanupTempFolder from "./Controllers/cleanTempFolder.js";
-
+import certificateRoute from './Routes/certificate.route.js'
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -33,6 +33,7 @@ app.use(express.json());
 app.use('/api/v1', internRoute);
 app.use('/api/v1', adminRoute);
 app.use('/api/v1', downloadDocuments);
+app.use('/api/v1', certificateRoute);
 
 
 app.use('/Documents', express.static(path.join(__dirname, 'Documents')));
@@ -44,3 +45,4 @@ app.listen(port, () => {
 app.use((req,res)=>{
   console.log("request received");
 });
+

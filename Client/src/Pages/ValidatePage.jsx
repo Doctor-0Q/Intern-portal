@@ -1,22 +1,42 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import HomeImgLeft from "../Assets/HomeImgLeft.svg";
+import axios from "axios";
+import toast from "react-hot-toast";
 
 export const ValidatePage = () => {
-  const [inputValue, setInputValue] = useState("");
+  const [valid, setValid] = useState(true);
+  const [certificateID, setCertificateID] = useState("");
 
   const handleChange = (event) => {
-    setInputValue(event.target.value);
+    setCertificateID(event.target.value);
   };
   const navigate = useNavigate();
 
-  const submitHandler = async () => {
-    navigate("./Validated");
+  const submitHandler = async (event) => {
+    event.preventDefault();
+    if (!certificateID) {
+      toast.error("Please enter certificate ID");
+    } else {
+      try {
+        const response = await axios.post("http://localhost:8080/api/v1/validate", {
+          id: certificateID,
+        });
+        if (response.data.success) {
+          setValid(true);
+          navigate("./Validated");
+        } else {
+          setValid(false);
+        }
+      } catch (error) {
+        setValid(false)
+      }
+    }
   };
 
   return (
     <>
-      <div className="flex flex-col justify-center items-center w-screen md:h-[650px] h-[450px] bg-transparent md:mt-[3%]">
+      <div className="flex flex-col justify-center items-center w-screen md:h-[650px] h-[450px] bg-transparent md:mt-[5%]">
         <div className="flex items-center justify-center mb-5 flex-row md:w-full w-[80%] font-semibold md:text-xl">
           <p className="font-semibold font-source-sans">
             <span className="text-red-600 font-semibold mr-2 font-source-sans leading-[30.17px]">
@@ -25,28 +45,35 @@ export const ValidatePage = () => {
             : Check your Certificate ID that is mentioned on your Certificate!
           </p>
         </div>
-        <div className="mb-5">
-          <input
-            id="input-field"
-            type="text"
-            value={inputValue}
-            onChange={handleChange}
-            placeholder="Enter your Certificate ID"
-            className="w-[300px] md:w-[547px] md:h-[64px] h-[50px] rounded-lg border-none pl-5 text-lg font-semibold transition-all duration-300 ease-in-out"
+        <form onSubmit={submitHandler} className="flex items-center flex-col">
+          <div className="mb-5">
+            <input
+              id="input-field"
+              type="text"
+              value={certificateID}
+              onChange={handleChange}
+              placeholder="Enter your Certificate ID"
+              className="w-[300px] md:w-[547px] md:h-[64px] h-[50px] rounded-lg border-none pl-5 text-lg font-semibold transition-all duration-300 ease-in-out"
+            />
+            <p className="mt-2">{certificateID}</p>
+          </div>
+          <div>
+            <button className="md:w-[327px] md:h-[66px] w-[200px] h-[50px] rounded-[20px] bg-[#063360] text-white font-medium text-2xl transition-all duration-300 ease-in-out hover:bg-[#041e36] cursor-pointer">
+              Submit
+            </button>
+          </div>
+        </form>
+        <div
+          className={`flex items-center justify-center mt-10 ${
+            valid ? "hidden" : ""
+          }`}
+        >
+          <img
+            src="src/Assets/cross.png"
+            alt=""
+            className="h-[80px] w-20 mr-[20px]"
           />
-          <p className="mt-2">{inputValue}</p>
-        </div>
-        <div>
-          <button
-            onClick={submitHandler}
-            className="md:w-[327px] md:h-[66px] w-[200px] h-[50px] rounded-[20px] bg-[#063360] text-white font-medium text-2xl transition-all duration-300 ease-in-out hover:bg-[#041e36] cursor-pointer"
-          >
-            Submit
-          </button>
-        </div>
-        <div className="flex items-center justify-center mt-10 hidden">
-          <img src="src/Assets/cross.png" alt="" className="h-20 w-20" />
-          <h1 className="font-bold text-2xl">
+          <h1 className="font-extrabold text-3xl md:text-5xl text-white">
             This certificate is not valid..
           </h1>
         </div>
