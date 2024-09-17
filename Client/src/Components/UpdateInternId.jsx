@@ -1,6 +1,5 @@
 import React, { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import toast from "react-hot-toast";
 
 const UpdateInternId = () => {
@@ -75,24 +74,27 @@ const UpdateInternId = () => {
 
   const submitHandler = async (e) => {
     e.preventDefault();
-    try {
-      const formData = new FormData();
-      formData.append('id', empID);
-      formData.append('name', name);
-      formData.append('performance', performance);
-      formData.append('contactNumber', contactNumber);
-      formData.append('email', email);
-      if (offerLetter) formData.append('offerLetter', offerLetter);
-      if (certificate) formData.append('certificate', certificate);
-      if (Lor) formData.append('lor', Lor);
+    console.log("id id", empID);
 
+    const formData = new FormData();
+    formData.append('id', empID);
+    formData.append('name', name);
+    formData.append('performance', performance);
+    formData.append('contactNumber', contactNumber);
+    formData.append('email', email);
+  
+    if (offerLetter) formData.append('offerLetter', offerLetter);
+    if (certificate) formData.append('certificate', certificate);
+    if (Lor) formData.append('lor', Lor);
+  
+    try {
       const response = await fetch('http://localhost:8080/api/v1/updateIntern', {
         method: 'PUT',
         body: formData,
       });
-
+  
       const data = await response.json();
-
+  
       if (data.success) {
         toast('Intern details updated successfully');
       } else {
@@ -103,6 +105,7 @@ const UpdateInternId = () => {
       toast('An error occurred while updating intern data');
     }
   };
+  
 
   return (
     <div className={`flex flex-col items-center w-full ${showForm ? "h-[1000px]" : "h-[480px]"}`}>
@@ -242,6 +245,7 @@ const UpdateInternId = () => {
                 <input
                   type="file"
                   ref={offerLetterRef}
+                  name="offerLetter"
                   style={{ display: "none" }}
                   onChange={(event) => handleFileChange(event, setOfferLetter, "offerLetter")}
                 />
@@ -269,6 +273,7 @@ const UpdateInternId = () => {
                 <input
                   type="file"
                   ref={certificateRef}
+                  name="certificate"
                   style={{ display: "none" }}
                   onChange={(event) => handleFileChange(event, setCertificate, "certificate")}
                 />
@@ -298,6 +303,7 @@ const UpdateInternId = () => {
                 <input
                   type="file"
                   ref={LorRef}
+                  name="lor"
                   style={{ display: "none" }}
                   onChange={(event) => handleFileChange(event, setLor, "lor")}
                 />

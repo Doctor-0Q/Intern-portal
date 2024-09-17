@@ -1,7 +1,7 @@
 import express, { urlencoded } from "express";
 import connection from './DB/connectionDB.js';
-import internRoute from './Routes/intern.route.js';
 import adminRoute from './Routes/admin.route.js';
+import internRoute from './Routes/internRoutes.js'
 import cors from 'cors';
 import cookieParser from "cookie-parser";
 import path from 'path'

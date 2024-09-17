@@ -5,6 +5,7 @@ import fs from 'fs/promises';
 export const updateIntern = async (req, res) => {
   try {
     const { id, name, performance, contactNumber, email } = req.body;
+    console.log(req.body)
     
     if (!id) {
       return res.status(400).json({ message: "Intern ID is required", success: false });
