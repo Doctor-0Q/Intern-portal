@@ -1,18 +1,11 @@
-<<<<<<< HEAD
-import React, { useEffect, useRef, useState } from "react";
-=======
 import React, { useRef, useState } from "react";
->>>>>>> branch1_aman_singh
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import toast from "react-hot-toast";
 
 const UpdateInternId = () => {
   const navigate = useNavigate();
-<<<<<<< HEAD
-=======
   const [empID, setEmpID] = useState("");
->>>>>>> branch1_aman_singh
   const [showForm, setShowForm] = useState(false);
 
   const [name, setName] = useState("");
@@ -44,26 +37,9 @@ const UpdateInternId = () => {
     }
   };
 
-<<<<<<< HEAD
-  const updateDetailForm = async() => {
-    try {
-      const response = await axios.post('http://localhost:8080/api/v1/findIntern',{
-        id: empID
-      });
-      if(response.data.success){
-
-        setShowForm(true);
-      }
-    } catch (error) {
-      toast.error("This intern does not exist")
-    }
-    
-  };
-=======
   const addIntern=()=>{
     navigate('../AdminPage/Add-New-Intern')
   }
->>>>>>> branch1_aman_singh
 
   const updateDetailForm = async () => {
     try {
@@ -128,20 +104,14 @@ const UpdateInternId = () => {
     }
   };
 
-  const addIntern=()=>{
-    navigate('../AdminPage/Add-New-Intern')
-  }
-
   return (
     <div className={`flex flex-col items-center w-full ${showForm ? "h-[1000px]" : "h-[480px]"}`}>
       <div>
         <h1 className="font-vollkorn text-3xl font-medium text-[#464545] text-center mt-4">
           Doc-q Admin Portal
         </h1>
-        
       </div>
 
-      
       <div className="mt-[5%]">
         <h1 className="text-[#343e49] text-2xl md:text-3xl">
           <i>Enter Intern ID to update Details</i>
@@ -158,21 +128,12 @@ const UpdateInternId = () => {
         />
         <span className={`absolute inset-y-0 right-3 flex items-center ${empID ? "" : "hidden"}`}>
           <svg
-<<<<<<< HEAD
-            onClick={
-              () => {
-                setEmpID("")
-                setShowForm(false)
-              }
-            }
-=======
            onClick={
             () => {
               setEmpID("")
               setShowForm(false)
             }
           }
->>>>>>> branch1_aman_singh
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
@@ -195,44 +156,14 @@ const UpdateInternId = () => {
         >
           Check
         </button>
-        
       </div>
-<<<<<<< HEAD
-        <div onClick={addIntern} className={`flex flex-col items-center text-xl ${
-=======
       <div onClick={addIntern} className={`flex flex-col items-center text-xl ${
->>>>>>> branch1_aman_singh
           showForm ? "hidden" : ""
         }`}>
   <button className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-4 py-2 rounded-full md:w-[300px] mt-4">
     Add an Intern
   </button>
 </div>
-<<<<<<< HEAD
-      {/* Updating form */}
-      <form
-        onSubmit={submitHandler}
-        className={`md:mt-[5%] mt-4 flex flex-col justify-center items-center ${
-          showForm ? "" : "hidden"
-        } w-full px-4 md:px-8`}
-      >
-        <i className="md:text-3xl text-2xl underline text-[#343e49] mb-4">
-          Update your interns details
-        </i>
-        <div className="flex justify-center items-center flex-col  w-screen mt-[3%]">
-          <div className="flex md:flex-row flex-col w-full items-center justify-center md:space-x-[25%]">
-            <div>
-              <label htmlFor="name" className="font-bold text-lg">
-                Name
-              </label>
-              <br />
-              <input
-                type="text"
-                id="name"
-                placeholder="name"
-                className="w-64 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-=======
       {showForm && (
         <form onSubmit={submitHandler} className="md:mt-[5%] mt-4 flex flex-col justify-center items-center w-full px-4 md:px-8">
           <i className="md:text-3xl text-2xl underline text-[#343e49] mb-4">
@@ -262,7 +193,6 @@ const UpdateInternId = () => {
                   className="w-64 px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
->>>>>>> branch1_aman_singh
             </div>
             <div className="flex md:flex-row flex-col w-full items-center justify-center md:space-x-[25%] mt-[3%]">
               <div>
@@ -377,17 +307,8 @@ const UpdateInternId = () => {
           <div className="md:mt-[2%] mt-[5%] w-60 h-12 text-2xl rounded-2xl bg-[#063360] text-white font-medium transition-all duration-300 ease-in-out hover:bg-[#041e36] cursor-pointer flex justify-center">
             <button type="submit" className="p-2">Submit</button>
           </div>
-<<<<<<< HEAD
-        </div>
-        <div className="md:mt-[2%] mt-[5%] w-60 h-12 text-2xl rounded-2xl bg-[#063360] text-white font-medium transition-all duration-300 ease-in-out hover:bg-[#041e36] cursor-pointer flex justify-center">
-          <button className="p-2">Submit</button>
-        </div>
-      </form>
-      
-=======
         </form>
       )}
->>>>>>> branch1_aman_singh
     </div>
   );
 };

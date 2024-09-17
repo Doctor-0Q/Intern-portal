@@ -23,15 +23,16 @@ export const AdminPage = () => {
         email:email,
         password:password
       })
-      console.log(response.data)
-      
       if(response.data.success){
-        navigate('./Update-Intern-details')
+        toast.success(response.data.message)
+        navigate('./Update-Intern-details');
+      }
+      else{
+        toast.error("There was some problem, try again..")
       }
       
     } catch (error) {
-      toast.error(response.data.message)
-      console.log(response.data)
+      toast.error(error.response.data.message)
     }
   };
 
