@@ -22,6 +22,9 @@ const InternDetails = () => {
     const url = `http://localhost:8080/api/v1/download/${fileType}/${intern.id}`;
     window.open(url, '_blank');  
   };
+  const handleHelpClick = () => {
+    window.location.href = "mailto:docq.help@gmail.com";
+  };
   return (
     <>
       <div
@@ -54,7 +57,7 @@ const InternDetails = () => {
               >
                 Download Documents
               </button>
-              <button className="bg-gradient-to-r from-customBlue1 via-customBlue2 to-customBlue3 hover:from-blue-500 hover:to-blue-700 text-white px-4 py-2 rounded-full w-[70%] md:w-[250px] h-[40%]">
+              <button onClick={handleHelpClick} className="bg-gradient-to-r from-customBlue1 via-customBlue2 to-customBlue3 hover:from-blue-500 hover:to-blue-700 text-white px-4 py-2 rounded-full w-[70%] md:w-[250px] h-[40%]">
                 Get Help
               </button>
             </div>
