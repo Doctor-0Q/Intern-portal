@@ -34,9 +34,15 @@ export const ValidatePage = () => {
     }
   };
 
+  const handleHelpClick = () => {
+    window.location.href = "mailto:docq.help@gmail.com";
+  };
+
   return (
     <>
-      <div className="flex flex-col justify-center items-center w-screen md:h-[650px] h-[450px] bg-transparent md:mt-[5%]">
+      <div className={`flex flex-col justify-center items-center w-screen ${
+            valid ? "md:h-[650px]" : "md:h-[750px]"
+          }  h-[450px] bg-transparent md:mt-[5%]`}>
         <div className="flex items-center justify-center mb-5 flex-row md:w-full w-[80%] font-semibold md:text-xl">
           <p className="font-semibold font-source-sans">
             <span className="text-red-600 font-semibold mr-2 font-source-sans leading-[30.17px]">
@@ -73,11 +79,21 @@ export const ValidatePage = () => {
             alt=""
             className="h-[80px] w-20 mr-[20px]"
           />
-          <h1 className="font-extrabold text-3xl md:text-5xl text-white">
+          <h1 className="font-bold text-2xl md:text-4xl text-white">
             This certificate is not valid..
           </h1>
         </div>
-        <div className="flex w-screen relative justify-center items-center">
+        <div className={`flex justify-center ${
+            valid ? "hidden" : ""
+          }`}>
+          <button
+            onClick={handleHelpClick}
+            className="px-8 py-3 bg-yellow-400 text-xl md:text-2xl font-bold text-gray-800 rounded-full shadow-lg transition-transform transform hover:scale-105 focus:scale-105 focus:outline-none"
+          >
+            Need help?
+          </button>
+        </div>
+        <div className="relative w-screen justify-center items-center">
           <div className="w-full md:ml-[15%]">
             <img
               src={HomeImgLeft}
