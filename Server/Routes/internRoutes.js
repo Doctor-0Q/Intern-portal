@@ -1,6 +1,7 @@
 import express from 'express';
 import multer from 'multer';
 import path from 'path';
+import { addIntern } from '../Controllers/addIntern.js';
 import { findIntern } from '../Controllers/findIntern.js';
 import { updateIntern } from '../Controllers/updateIntern.js';
 
@@ -19,10 +20,17 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 router.route('/findIntern').post(findIntern);
+
 router.route('/updateIntern').put(upload.fields([
   { name: 'offerLetter', maxCount: 1 },
   { name: 'certificate', maxCount: 1 },
   { name: 'lor', maxCount: 1 }
 ]), updateIntern);
+
+router.route('/addIntern').post(upload.fields([
+  { name: 'offerLetter', maxCount: 1 },
+  { name: 'certificate', maxCount: 1 },
+  { name: 'lor', maxCount: 1 }
+]), addIntern);
 
 export default router;
