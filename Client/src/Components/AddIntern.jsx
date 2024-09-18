@@ -1,9 +1,16 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import toast from "react-hot-toast";
 
 const AddIntern = () => {
   const navigate = useNavigate();
+
+  const [name, setName] = useState('');
+  const [performance, setPerformance] = useState('');
+  const [contactNumber, setContactNumber] = useState('');
+  const [email, setEmail] = useState('');
+  const [role, setRole] = useState('');
 
   const offerLetterRef = useRef(null);
   const certificateRef = useRef(null);
@@ -30,13 +37,55 @@ const AddIntern = () => {
     setShowForm(true);
   };
 
-  const submitHandler = (e) => {
+  const submitHandler = async (e) => {
     e.preventDefault();
-  };
+    try {
+      const formData = new FormData();
+      formData.append('id', empID);
+      formData.append('name', name);
+      formData.append('performance', performance);
+      formData.append('contactNumber', contactNumber);
+      formData.append('email', email);
+      formData.append('role',role);
+      if (offerLetter) formData.append('offerLetter', offerLetter);
+      if (certificate) formData.append('certificate', certificate);
+      if (Lor) formData.append('lor', Lor);
+  
+      const response = await fetch('http://localhost:8080/api/v1/addIntern', {
+        method: 'POST',
+        body: formData,
+      });
+  
+      const data = await response.json();
+  
+      if (data.success) {
+        toast.success('Intern added successfully');
+        // Reset form fields
+        setEmpID('');
+        setName('');
+        setPerformance('');
+        setContactNumber('');
+        setEmail('');
+        setRole('');
+        setOfferLetter(null);
+        setCertificate(null);
+        setLor(null);
+        // Clear file input values
+        if (offerLetterRef.current) offerLetterRef.current.value = '';
+        if (certificateRef.current) certificateRef.current.value = '';
+        if (LorRef.current) LorRef.current.value = '';
 
-  const addIntern=()=>{
-    navigate('../AdminPage/Add-New-Intern')
-  }
+        document.getElementById("offerLetter").placeholder = "upload the interns offer letter";
+        document.getElementById("certificate").placeholder = "upload the interns Certificate";
+        document.getElementById("Lor").placeholder = "upload the interns L.O.R";
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      toast.error('An error occurred while adding intern data');
+    }
+  };
 
   return (
     <div
@@ -106,6 +155,8 @@ const AddIntern = () => {
               <input
                 type="text"
                 id="name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
                 placeholder="name"
                 className="w-64 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
@@ -117,7 +168,9 @@ const AddIntern = () => {
               <br />
               <input
                 type="text"
-                id="name"
+                id="performance"
+                value={performance}
+                onChange={(e) => setPerformance(e.target.value)}
                 placeholder="Enter performance"
                 className="w-64 px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
@@ -132,6 +185,8 @@ const AddIntern = () => {
               <input
                 type="text"
                 id="number"
+                value={contactNumber}
+                onChange={(e) => setContactNumber(e.target.value)}
                 placeholder="enter contact number"
                 className="w-64 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
@@ -144,6 +199,8 @@ const AddIntern = () => {
               <input
                 type="email"
                 id="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 placeholder="Enter email"
                 className="w-64 px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
@@ -159,6 +216,7 @@ const AddIntern = () => {
                 onClick={() => handleClick(offerLetterRef)}
                 type="text"
                 id="offerLetter"
+                value={offerLetter || ""}
                 placeholder="upload the interns offer letter"
                 className="w-full pr-10 p-2.5 border border-gray-300 rounded-md focus:outline-none hover:cursor-pointer"
               />
@@ -217,6 +275,7 @@ const AddIntern = () => {
                 onClick={() => handleClick(certificateRef)}
                 type="text"
                 id="certificate"
+                value={certificate || ""}
                 placeholder="upload the interns Certificate"
                 className="w-64 pr-10 p-2.5 border border-gray-300 rounded-md focus:outline-none hover:cursor-pointer"
               />
@@ -266,60 +325,80 @@ const AddIntern = () => {
               />
             </div>
           </div>
-          <div className="relative w-64 mt-[3%]">
-            <label htmlFor="Lor" className="font-bold text-lg">
-              Upload Letter of Recomd
-            </label>
-            <input
-              readOnly
-              onClick={() => handleClick(LorRef)}
-              type="text"
-              id="certificate"
-              placeholder="upload the interns L.O.R"
-              className="w-64 pr-10 p-2.5 border border-gray-300 rounded-md focus:outline-none hover:cursor-pointer"
-            />
-            <span
-              onClick={() => handleClick(LorRef)}
-              class="absolute inset-y-0 right-3 flex items-center mt-[10%] hover:cursor-pointer"
-            >
-              <svg
-                fill="#000000"
-                className="h-5 w-5"
-                version="1.1"
-                id="Capa_1"
-                xmlns="http://www.w3.org/2000/svg"
-                xmlns:xlink="http://www.w3.org/1999/xlink"
-                viewBox="-23.1 -23.1 431.17 431.17"
-                xml:space="preserve"
-                stroke="#000000"
-                stroke-width="38.497"
+          <div className="flex md:flex-row flex-col w-full items-center justify-center md:space-x-[25%] mt-[3%]">
+          <div className="relative w-64">
+              <label htmlFor="lor" className="font-bold text-lg">
+                  Upload Letter of Recomd
+              </label>
+              <input
+                readOnly
+                onClick={() => handleClick(LorRef)}
+                type="text"
+                id="Lor"
+                value={Lor || ""}
+                placeholder="upload the interns L.O.R"
+                className="w-full pr-10 p-2.5 border border-gray-300 rounded-md focus:outline-none hover:cursor-pointer"
+              />
+              <span
+                onClick={() => handleClick(LorRef)}
+                class="absolute inset-y-0 right-3 flex items-center mt-[10%] hover:cursor-pointer"
               >
-                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                <g
-                  id="SVGRepo_tracerCarrier"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                ></g>
-                <g id="SVGRepo_iconCarrier">
-                  {" "}
-                  <g>
+                <svg
+                  fill="#000000"
+                  className="h-5 w-5"
+                  version="1.1"
+                  id="Capa_1"
+                  xmlns="http://www.w3.org/2000/svg"
+                  xmlns:xlink="http://www.w3.org/1999/xlink"
+                  viewBox="-23.1 -23.1 431.17 431.17"
+                  xml:space="preserve"
+                  stroke="#000000"
+                  stroke-width="38.497"
+                >
+                  <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                  <g
+                    id="SVGRepo_tracerCarrier"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  ></g>
+                  <g id="SVGRepo_iconCarrier">
                     {" "}
-                    <g id="Upload">
+                    <g>
                       {" "}
-                      <path d="M372.939,264.641c-6.641,0-12.03,5.39-12.03,12.03v84.212H24.061v-84.212c0-6.641-5.39-12.03-12.03-12.03 S0,270.031,0,276.671v96.242c0,6.641,5.39,12.03,12.03,12.03h360.909c6.641,0,12.03-5.39,12.03-12.03v-96.242 C384.97,270.019,379.58,264.641,372.939,264.641z"></path>{" "}
-                      <path d="M117.067,103.507l63.46-62.558v235.71c0,6.641,5.438,12.03,12.151,12.03c6.713,0,12.151-5.39,12.151-12.03V40.95 l63.46,62.558c4.74,4.704,12.439,4.704,17.179,0c4.74-4.704,4.752-12.319,0-17.011l-84.2-82.997 c-4.692-4.656-12.584-4.608-17.191,0L99.888,86.496c-4.752,4.704-4.74,12.319,0,17.011 C104.628,108.211,112.327,108.211,117.067,103.507z"></path>{" "}
+                      <g id="Upload">
+                        {" "}
+                        <path d="M372.939,264.641c-6.641,0-12.03,5.39-12.03,12.03v84.212H24.061v-84.212c0-6.641-5.39-12.03-12.03-12.03 S0,270.031,0,276.671v96.242c0,6.641,5.39,12.03,12.03,12.03h360.909c6.641,0,12.03-5.39,12.03-12.03v-96.242 C384.97,270.019,379.58,264.641,372.939,264.641z"></path>{" "}
+                        <path d="M117.067,103.507l63.46-62.558v235.71c0,6.641,5.438,12.03,12.151,12.03c6.713,0,12.151-5.39,12.151-12.03V40.95 l63.46,62.558c4.74,4.704,12.439,4.704,17.179,0c4.74-4.704,4.752-12.319,0-17.011l-84.2-82.997 c-4.692-4.656-12.584-4.608-17.191,0L99.888,86.496c-4.752,4.704-4.74,12.319,0,17.011 C104.628,108.211,112.327,108.211,117.067,103.507z"></path>{" "}
+                      </g>{" "}
+                      <g> </g> <g> </g> <g> </g> <g> </g> <g> </g> <g> </g>{" "}
                     </g>{" "}
-                    <g> </g> <g> </g> <g> </g> <g> </g> <g> </g> <g> </g>{" "}
-                  </g>{" "}
-                </g>
-              </svg>
-            </span>
-            <input
-              type="file"
-              ref={LorRef}
-              style={{ display: "none" }}
-              onChange={(event) => handleFileChange(event, setLor, "Lor")}
-            />
+                  </g>
+                </svg>
+              </span>
+              <input
+                type="file"
+                ref={LorRef}
+                style={{ display: "none" }}
+                onChange={(event) =>
+                  handleFileChange(event, setLor, "Lor")
+                }
+              />
+            </div>
+
+            <div className="relative w-64">
+            <label htmlFor="role" className="font-bold text-lg">
+                Role
+              </label>
+              <br />
+              <input
+                type="text"
+                id="role"
+                value={role}
+                onChange={(e) => setRole(e.target.value)}
+                placeholder="Intern Role"
+                className="w-64 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
           </div>
         </div>
         <div className="md:mt-[2%] mt-[5%] w-60 h-12 text-2xl rounded-2xl bg-[#063360] text-white font-medium transition-all duration-300 ease-in-out hover:bg-[#041e36] cursor-pointer flex justify-center">

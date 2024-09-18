@@ -59,9 +59,9 @@ const UpdateInternId = () => {
         setPerformance(data.internDetails.performance || "");
         setContactNumber(data.internDetails.p_number || "");
         setEmail(data.internDetails.email || "");
-        setOfferLetterFile(data.internDetails.offerLetterFile || null); //OR USE .offerLetterFile for the file name only
-        setCertificateFile(data.internDetails.certificateFile || null);
-        setLorFile(data.internDetails.lorFile || null);
+        setOfferLetterFile(data.internDetails.offerLetterPath || null); //OR USE .offerLetterFile for the file name only
+        setCertificateFile(data.internDetails.certificatePath || null);
+        setLorFile(data.internDetails.lorPath || null);
         setShowForm(true);
       } else {
         toast.error(data.message);
@@ -320,4 +320,3 @@ const UpdateInternId = () => {
 };
 
 export default UpdateInternId;
-
