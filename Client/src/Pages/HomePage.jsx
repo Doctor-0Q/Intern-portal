@@ -13,7 +13,7 @@ export const HomePage = () => {
   const submitHandler=async(e)=>{
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:8080/api/v1/findIntern',{
+      const response = await axios.post(`${API_URL}/findIntern`,{
         id: inputValue
       });
       if(response.data.success){
