@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import toast from 'react-hot-toast'
+import API_URL from '../config';
 
 export const AdminPage = () => {
   const [email,setEmail]=useState("")
