@@ -19,4 +19,4 @@ const internSchema = new mongoose.Schema({
   lorPath: String
 }, { timestamps: true });
 
-export const Intern = mongoose.model('interndatas', internSchema);
+export const Intern = mongoose.model('internsdata', internSchema, "internsdata");
