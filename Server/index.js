@@ -23,8 +23,8 @@ app.use(cors({
   credentials: true  
 }));
 
-connection('test');  
-cleanupTempFolder();
+connection();  
+//cleanupTempFolder();
 
 app.use(urlencoded({ extended: true }));
 app.use(express.json());
