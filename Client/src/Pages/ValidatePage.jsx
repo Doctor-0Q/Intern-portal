@@ -19,7 +19,7 @@ export const ValidatePage = () => {
       toast.error("Please enter certificate ID");
     } else {
       try {
-        const response = await axios.post("http://localhost:8080/api/v1/validate", {
+        const response = await axios.post(`${API_URL}/validate`, {
           id: certificateID,
         });
         if (response.data.success) {
