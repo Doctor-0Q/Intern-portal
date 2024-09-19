@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import HomeImgLeft from "../Assets/HomeImgLeft.svg";
 import axios from "axios";
 import toast from "react-hot-toast";
+import API_URL from '../config';
 
 export const ValidatePage = () => {
   const [valid, setValid] = useState(true);
