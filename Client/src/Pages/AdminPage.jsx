@@ -19,7 +19,7 @@ export const AdminPage = () => {
   const submitHandler = async(event) => {
     event.preventDefault();
     try {
-      const response=await axios.post('http://localhost:8080/api/v1/adminLogin',{
+      const response=await axios.post(`${API_URL}/adminLogin`,{
         email:email,
         password:password
       })
