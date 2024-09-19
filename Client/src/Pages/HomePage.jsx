@@ -3,6 +3,7 @@ import HomeImgLeft from "../Assets/HomeImgLeft.svg";
 import HomeImgRight from "../Assets/HomeImgRight.svg";
 import { useNavigate } from "react-router-dom";
 import axios from 'axios';
+import API_URL from '../config';
 import toast from 'react-hot-toast'
 
 export const HomePage = () => {
