@@ -19,7 +19,7 @@ const app = express();
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors({
-   origin: process.env.FRONTEND_URL || 'https://www.docqinternportal.live',
+   origin: [process.env.FRONTEND_URL, 'https://www.docqinternportal.live', 'https://docqinternportal.live'],
    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
    credentials: true  
 }));
