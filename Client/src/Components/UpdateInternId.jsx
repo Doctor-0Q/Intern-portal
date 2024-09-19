@@ -43,7 +43,7 @@ const UpdateInternId = () => {
   const updateDetailForm = async () => {
     try {
       console.log("Sending request with ID:", empID);
-      const response = await fetch('http://localhost:8080/api/v1/findIntern', {
+      const response = await fetch(`${API_URL}/findIntern`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -88,7 +88,7 @@ const UpdateInternId = () => {
     if (Lor) formData.append('lor', Lor);
   
     try {
-      const response = await fetch('http://localhost:8080/api/v1/updateIntern', {
+      const response = await fetch(`${API_URL}/updateIntern`, {
         method: 'PUT',
         body: formData,
       });
