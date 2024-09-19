@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Logo from "../Assets/Logo.png";
 import { useLocation } from "react-router-dom";
+import API_URL from '../config';
 
 const InternDetails = () => {
   const { state } = useLocation();
