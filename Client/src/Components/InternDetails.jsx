@@ -20,7 +20,7 @@ const InternDetails = () => {
     return <p className="text-white text-2xl">No intern details available.</p>;
   }
   const downloadFile = (fileType) => {
-    const url = `http://localhost:8080/api/v1/download/${fileType}/${intern.id}`;
+    const url = `${API_URL}/download/${fileType}/${intern.id}`;
     window.open(url, '_blank');  
   };
   const handleHelpClick = () => {
