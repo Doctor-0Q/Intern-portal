@@ -19,7 +19,7 @@ const app = express();
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors({
-   origin: process.env.FRONTEND_URL || 'https://intern-portal-xvsw.vercel.app',
+   origin: process.env.FRONTEND_URL || 'https://www.docqinternportal.live',
   credentials: true  
 }));
 
