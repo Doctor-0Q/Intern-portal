@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import toast from "react-hot-toast";
+import API_URL from '../config';
 
 const AddIntern = () => {
   const navigate = useNavigate();
@@ -51,7 +52,7 @@ const AddIntern = () => {
       if (certificate) formData.append('certificate', certificate);
       if (Lor) formData.append('lor', Lor);
   
-      const response = await fetch('http://localhost:8080/api/v1/addIntern', {
+      const response = await fetch(`${API_URL}/addIntern`, {
         method: 'POST',
         body: formData,
       });
